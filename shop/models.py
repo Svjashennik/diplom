@@ -14,7 +14,7 @@ class Developer(models.Model):
 
 
 
-class Genre(models.Models):
+class Genre(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.TextField()
     decs = models.TextField(blank=True)
@@ -26,12 +26,24 @@ class Game(models.Model):
     name = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     release_date = models.DateTimeField()
-    developer_id = models.ForeignKey(Developer, on_delete=models.SET_NULL)
-    genre =  models.ForeignKey(Genre, on_delete=models.SET_NULL)
+    developer_id = models.ForeignKey(Developer, on_delete=models.SET_NULL, related_name='games', null=True)
+    genre =  models.ForeignKey(Genre, on_delete=models.SET_NULL, related_name='games', null=True)
 
 
     def __str__(self):
         return f'{self.name}'
+    
+    def find_in_cart(self,user):
+        return Cart.objects.filter(customer=user, game=self).first()
+
+    def add_to_cart(self, user, count = 1):
+        cart = self.find_in_cart()
+        if cart is not None:
+            cart.count+=1
+            cart.save()
+            return True
+        Cart.objects.create(customer=user, game=self ,count=1)
+        return True
 
 
 class Order(models.Model):
@@ -42,26 +54,28 @@ class Order(models.Model):
         canceled = 'Cancel'
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.TextField(choices=Status.choices)
 
 
 class OrderedGame(models.Model):
-    order = models.ForeignKey(Order, primary_key=True, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, primory_key=True, on_delete=models.SET_NULL)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='games')
+    game = models.ForeignKey(Game,  on_delete=models.CASCADE, related_name='orders')
     count = models.IntegerField(default=1)
 
 
 class Cart(models.Model):
-    customer = models.ForeignKey(User,primary_key=True, on_delete=models.CASCADE)
-    game = models.ForeignKey(User,primary_key=True, on_delete=models.SET_NULL)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='carts')
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='carts')
     count =  models.IntegerField(default=1)
 
 
 class Review(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
-    game = models.ForeignKey(User, on_delete=models.SET_NULL)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    game = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     text = models.TextField()
     grade = models.IntegerField()

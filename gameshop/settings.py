@@ -1,12 +1,9 @@
 
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 SECRET_KEY = '1&iqusszh97_lm+sjt63)&2)^0#fvgzhdf7*9f7$!a-i7!2a3)'
 DEBUG = True

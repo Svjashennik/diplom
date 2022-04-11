@@ -28,6 +28,7 @@ class Game(models.Model):
     release_date = models.DateTimeField()
     developer_id = models.ForeignKey(Developer, on_delete=models.SET_NULL, related_name='games', null=True)
     genre =  models.ForeignKey(Genre, on_delete=models.SET_NULL, related_name='games', null=True)
+    active = models.BooleanField(default=True)
 
 
     def __str__(self):
@@ -44,6 +45,9 @@ class Game(models.Model):
             return True
         Cart.objects.create(customer=user, game=self ,count=1)
         return True
+    
+    def user_is_owner(self, user):
+        OrderedGame.objects.filter()
 
 
 class Order(models.Model):

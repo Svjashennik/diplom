@@ -16,3 +16,12 @@ class GameListAPIView(APIView):
         games = models.games.objects.filter(active=True)
         serializer = serializers.GameListSerializer(games, many=True, context={'request':request})
         return Response(serializer.data)
+
+
+class CartListAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        cart_games = [cart.game for cart in models.Cart.objects.filter(customer=request.user)]
+        serializer = serializers.GameListSerializer(cart_games, many=True, context={'request':request})
+        return Response(serializer.data)

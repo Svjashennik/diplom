@@ -46,9 +46,6 @@ class Game(models.Model):
         Cart.objects.create(customer=user, game=self ,count=1)
         return True
     
-    def user_is_owner(self, user):
-        OrderedGame.objects.filter()
-
 
 class Order(models.Model):
 

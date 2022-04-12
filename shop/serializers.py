@@ -15,5 +15,25 @@ class GameListSerializer(serializers.ModelSerializer):
         return models.Game.objects.create(**validated_data)
 
     def get_count(self, obj):
+        if self.context['request'].user.is_anonymous():
+            return 0
         cust = self.context['request'].user
-        return obj.find_in_cart(cust).count
+        cart = obj.find_in_cart(cust)
+        if cart is None:
+            return 0
+        return cart.count
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    game = serializers.SerializerMethodField('get_game')
+
+
+    class Meta:
+        model = models.Order
+        fields = ['uuid', 'order_date', 'status', 'customer_id', 'game']
+
+    def create(self, validated_data):
+        return models.Order.objects.create(**validated_data)
+
+    def get_game(self, obj):
+        

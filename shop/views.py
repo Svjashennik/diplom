@@ -19,9 +19,18 @@ class GameListAPIView(APIView):
 
 
 class CartListAPIView(APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         cart_games = [cart.game for cart in models.Cart.objects.filter(customer=request.user)]
         serializer = serializers.GameListSerializer(cart_games, many=True, context={'request':request})
+        return Response(serializer.data)
+
+
+class OrderListAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        orders = models.Order.objects.filter(customer=request.user).order_by('order_date')
+        serializer = serializers.OrderListSerializer(orders, many=True, context={'request':request})
         return Response(serializer.data)

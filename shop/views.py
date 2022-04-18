@@ -1,3 +1,4 @@
+import uuid
 from django.http import Http404
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -13,7 +14,7 @@ class GameListAPIView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
-        games = models.games.objects.filter(active=True)
+        games = models.Game.objects.filter(active=True)
         serializer = serializers.GameListSerializer(games, many=True, context={'request':request})
         return Response(serializer.data)
 
@@ -26,6 +27,9 @@ class CartListAPIView(APIView):
         serializer = serializers.GameListSerializer(cart_games, many=True, context={'request':request})
         return Response(serializer.data)
 
+    def post(self, request):
+        game = models.Game.objects.filter(active=True, uuid=request.data['uuid'])
+        return Response(game.add_to_cart())
 
 class OrderListAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]

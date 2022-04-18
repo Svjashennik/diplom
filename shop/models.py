@@ -36,6 +36,9 @@ class Game(models.Model):
     
     def find_in_cart(self,user):
         return Cart.objects.filter(customer=user, game=self).first()
+    
+    def find_in_order(self, order):
+        return OrderedGame.objects.filter(order=order).first()
 
     def add_to_cart(self, user, count = 1):
         cart = self.find_in_cart()
@@ -58,6 +61,9 @@ class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     order_date = models.DateTimeField(auto_now_add=True)
     status = models.TextField(choices=Status.choices)
+
+    def get_games(self):
+        return [ordgame.game for ordgame in models.OrderedGame.objects.filter(order=self)]
 
 
 class OrderedGame(models.Model):

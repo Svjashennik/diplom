@@ -38,3 +38,10 @@ class OrderListAPIView(APIView):
         orders = models.Order.objects.filter(customer=request.user).order_by('order_date')
         serializer = serializers.OrderListSerializer(orders, many=True, context={'request':request})
         return Response(serializer.data)
+    
+    def put(self, request):
+        order = models.Order.objects.filter(uuid=request.data['uuid'])
+        serializer = serializers.OrderListSerializer(order, data=request.data, context={'request': request})
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)

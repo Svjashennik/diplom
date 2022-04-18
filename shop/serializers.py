@@ -22,7 +22,7 @@ class GameListSerializer(serializers.ModelSerializer):
 
         if self.context['request'].user.is_anonymous():
             return 0
-            
+
         cust = self.context['request'].user
         cart = obj.find_in_cart(cust)
         if cart is None:
@@ -39,6 +39,15 @@ class OrderListSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return models.Order.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        if validated_data.get('status') is not None:
+            instance.status = validated_data.get('date')
+        if validated_data.get('order_date') is not None:
+            instance.order_date = validated_data.get('order_date')
+
+        instance.save()
+        return instance
 
     def get_game(self, obj):
         return GameListSerializer(obj.get_game(), many = True, context={'order':obj})

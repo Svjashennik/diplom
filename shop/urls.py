@@ -4,5 +4,6 @@ from shop import views
 
 urlpatterns = [
     path('gamelist/', views.GameListAPIView.as_view()),
-    
+    path('cart/', views.CartListAPIView.as_view()),
+    path('orderlist/', views.OrderListAPIView.as_view()),
 ]

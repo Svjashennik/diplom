@@ -45,3 +45,12 @@ class OrderListAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+        
+
+class RegistrationAPIView(APIView):
+
+    def post(self, request):
+        serializer = serializers.RegistrationSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)

@@ -13,7 +13,6 @@ class Developer(models.Model):
     desc = models.TextField(blank=True)
 
 
-
 class Genre(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.TextField()

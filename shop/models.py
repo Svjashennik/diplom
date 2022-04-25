@@ -20,15 +20,15 @@ class Genre(models.Model):
     decs = models.TextField(blank=True)
 
 
-
 class Game(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    release_date = models.DateTimeField()
-    developer_id = models.ForeignKey(Developer, on_delete=models.SET_NULL, related_name='games', null=True)
-    genre =  models.ForeignKey(Genre, on_delete=models.SET_NULL, related_name='games', null=True)
+    release_date = models.DateField()
+    developer = models.ForeignKey(Developer, on_delete=models.SET_NULL, related_name='games', null=True)
+    genre =  models.ManyToManyField(Genre, related_name='games')
     active = models.BooleanField(default=True)
+    price = models.FloatField(default=3)
 
 
     def __str__(self):
@@ -49,6 +49,12 @@ class Game(models.Model):
         Cart.objects.create(customer=user, game=self ,count=1)
         return True
     
+
+class Key(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    game = models.ForeignKey(Game,  on_delete=models.CASCADE, related_name='keys')
+    text = models.TextField()
+    active = models.BooleanField(default=True)
 
 class Order(models.Model):
 

@@ -6,10 +6,12 @@ from shop import models
 
 class GameListSerializer(serializers.ModelSerializer):
     count = serializers.SerializerMethodField('get_count')
+    genre = serializers.SerializerMethodField('get_genre')
+    developer = serializers.SerializerMethodField('get_developer')
 
     class Meta:
         model = models.Game
-        fields = ['name', 'release_date', 'developer_id', 'active', 'genre', 'count']
+        fields = ['name', 'release_date', 'developer', 'active', 'genre', 'count']
 
     def create(self, validated_data):
         return models.Game.objects.create(**validated_data)
@@ -20,7 +22,7 @@ class GameListSerializer(serializers.ModelSerializer):
             ordgame = obj.find_in_order(self.context['order'])
             return ordgame.count
 
-        if self.context['request'].user.is_anonymous():
+        if self.context['request'].user.is_anonymous:
             return 0
 
         cust = self.context['request'].user
@@ -29,6 +31,14 @@ class GameListSerializer(serializers.ModelSerializer):
             return 0
         return cart.count
 
+    def get_genre(self, obj):
+        genres = []
+        for gen in obj.genre.all():
+            genres.append(gen.name)
+        return genres
+
+    def get_developer(self, obj):
+        return obj.developer.name
 
 class OrderListSerializer(serializers.ModelSerializer):
     game = serializers.SerializerMethodField('get_game')

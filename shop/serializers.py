@@ -12,7 +12,7 @@ class GameListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Game
-        fields = ['name', 'release_date', 'developer', 'active', 'genre', 'count']
+        fields = ['uuid','name', 'release_date', 'developer', 'active', 'genre', 'count', 'price']
 
     def create(self, validated_data):
         return models.Game.objects.create(**validated_data)
@@ -46,14 +46,19 @@ class OrderListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Order
-        fields = ['uuid', 'order_date', 'status', 'customer_id', 'game', 'count']
+        fields = ['uuid', 'order_date', 'status', 'customer_id', 'game']
 
     def create(self, validated_data):
-        return models.Order.objects.create(**validated_data)
+        user = self.context['request'].user
+        order =  models.Order.objects.create(**validated_data, customer=user)
+        for cart in models.Cart.objects.filter(customer=user):
+            models.OrderedGame.objects.create(order=order, game=cart.game, count=cart.count)
+            cart.delete()
+        return order
     
     def update(self, instance, validated_data):
         if validated_data.get('status') is not None:
-            instance.status = validated_data.get('date')
+            instance.status = validated_data.get('status')
         if validated_data.get('order_date') is not None:
             instance.order_date = validated_data.get('order_date')
 
@@ -61,7 +66,7 @@ class OrderListSerializer(serializers.ModelSerializer):
         return instance
 
     def get_game(self, obj):
-        return GameListSerializer(obj.get_game(), many = True, context={'order':obj})
+        return GameListSerializer(obj.get_games(), many = True, context={'order':obj}).data
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

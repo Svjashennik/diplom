@@ -40,7 +40,7 @@ class Game(models.Model):
         return OrderedGame.objects.filter(order=order).first()
 
     def add_to_cart(self, user, count = 1):
-        cart = self.find_in_cart()
+        cart = self.find_in_cart(user)
         if cart is not None:
             cart.count+=1
             cart.save()
@@ -68,7 +68,7 @@ class Order(models.Model):
     status = models.TextField(choices=Status.choices)
 
     def get_games(self):
-        return [ordgame.game for ordgame in models.OrderedGame.objects.filter(order=self)]
+        return [ordgame.game for ordgame in OrderedGame.objects.filter(order=self)]
 
 
 class OrderedGame(models.Model):

@@ -1,4 +1,4 @@
-import uuid
+
 from django.http import Http404
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -68,6 +68,21 @@ class RegistrationAPIView(APIView):
 
     def post(self, request):
         serializer = serializers.RegistrationSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+
+class ReviewAPIView(APIView):
+
+    def get(self, request, uuid):
+        game = models.Game.objects.get(pk=uuid)
+        serializer = serializers.ReviewSerializer(game.reviews.all(), many=True, context={'request':request})
+        return Response(serializer.data)
+    
+    def post(self, request, uuid):
+        game = models.Game.objects.get(pk=uuid)
+        serializer = serializers.ReviewSerializer(data=request.data, context={'request':request, 'game':game})
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)

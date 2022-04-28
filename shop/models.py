@@ -88,6 +88,6 @@ class Cart(models.Model):
 class Review(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
-    game = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name='reviews')
     text = models.TextField()
     grade = models.IntegerField()

@@ -1,4 +1,5 @@
 
+from multiprocessing import context
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
@@ -99,3 +100,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.save()
         validated_data['token'] = Token.objects.create(user=user)
         return validated_data
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Review 
+        fields = ['uuid', 'text', 'grade']
+
+    def create(self, validated_data):
+        return models.Review.objects.create(**validated_data, customer=self.context['request'].user, game=self.context['game'])

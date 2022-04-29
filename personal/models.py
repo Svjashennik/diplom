@@ -25,7 +25,7 @@ class BugReport(models.Model):
         S5 = 'Тривиальный'
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    owner= models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    owner= models.ForeignKey(User, on_delete=models.CASCADE, related_name='bugreports')
     index = models.IntegerField()
     name = models.TextField()
     steps = models.TextField(default = '', blank=True)
@@ -36,5 +36,6 @@ class BugReport(models.Model):
     severity = models.TextField(choices=Severity.choices)
     status = models.TextField(choices=Status.choices)
     url = models.TextField(default = '', blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 

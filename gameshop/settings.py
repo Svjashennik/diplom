@@ -16,6 +16,7 @@ ASGI_APPLICATION = "gameshop.asgi.application"
 
 INSTALLED_APPS = [
     'shop.apps.ShopConfig',
+    'personal.apps.PersonalConfig',
 
     'django.contrib.admin',
     'django.contrib.auth',

@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token 
-from shop import views
+from . import views
 
 urlpatterns = [
     path('gamelist/', views.GameListAPIView.as_view()),

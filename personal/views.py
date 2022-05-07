@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from .services import *
-from personal import models, serializers
+from . import models, serializers
 from rest_framework.exceptions import ValidationError
 from requests.exceptions import HTTPError
 from rest_framework import permissions, status
@@ -23,6 +23,9 @@ class BugReportListAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+        
+    def get_serializer_class(self):
+        return serializers.BugReportSerializer
 
 
 
@@ -48,6 +51,9 @@ class BugReportAPIView(APIView):
         report.delete()
         return Response(status=status.HTTP_204_NO_CONTENT) 
 
+    def get_serializer_class(self):
+        return serializers.BugReportSerializer
+
 
 class UserBugListAPIView(APIView):
 
@@ -56,3 +62,6 @@ class UserBugListAPIView(APIView):
         report = models.BugReport.objects.filter(owner=user).order_by('index')
         serializer = serializers.BugReportListSerializer(report, many=True, context={'request':request})
         return Response(serializer.data)
+    
+    def get_serializer_class(self):
+        return serializers.BugReportListSerializer

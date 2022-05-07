@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from personal import models
+from . import models
 
 
 class BugReportSerializer(serializers.ModelSerializer):

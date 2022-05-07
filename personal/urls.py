@@ -1,5 +1,5 @@
 from django.urls import path, include
-from personal import views
+from . import views
 
 urlpatterns = [
     path('bugreports/', views.BugReportListAPIView.as_view()),

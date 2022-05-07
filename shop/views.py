@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from .services import *
-from shop import models, serializers
+from . import models, serializers
 from rest_framework.exceptions import ValidationError
 from requests.exceptions import HTTPError
 
@@ -29,6 +29,9 @@ class GameListAPIView(APIView):
         serializer = serializers.GameListSerializer(games, many=True, context={'request':request})
         return Response(serializer.data)
 
+    def get_serializer_class(self):
+        return serializers.GameListSerializer
+
 
 class CartListAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -41,6 +44,9 @@ class CartListAPIView(APIView):
     def post(self, request):
         game = models.Game.objects.filter(uuid=request.data['uuid']).first()
         return Response(game.add_to_cart(request.user))
+
+    def get_serializer_class(self):
+        return serializers.GameListSerializer
 
 class OrderListAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -62,7 +68,10 @@ class OrderListAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
-        
+    
+    def get_serializer_class(self):
+        return serializers.OrderListSerializer
+
 
 class RegistrationAPIView(APIView):
 
@@ -71,6 +80,9 @@ class RegistrationAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+    
+    def get_serializer_class(self):
+        return serializers.RegistrationSerializer
 
 
 class ReviewAPIView(APIView):
@@ -86,3 +98,6 @@ class ReviewAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+    
+    def get_serializer_class(self):
+        return serializers.ReviewSerializer

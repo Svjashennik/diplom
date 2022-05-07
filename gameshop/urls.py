@@ -13,9 +13,9 @@ urlpatterns = [
     path('api/admin/', admin.site.urls),
     path('api/shop/',include('shop.urls')),
     path('api/personal/',include('personal.urls')),
-    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path(
-        'docs/',
+        'api/docs/',
         SpectacularSwaggerView.as_view(
             template_name='swagger-ui.html', url_name='schema', permission_classes=(permissions.AllowAny,),
         ),

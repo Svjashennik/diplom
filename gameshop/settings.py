@@ -149,7 +149,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'API Planner - team_swan',
-    'DESCRIPTION': 'Планировщик задач',
+    'TITLE': 'Gameshop',
+    'DESCRIPTION': 'Сайт для тренировки навыков тестирования',
     'VERSION': '1.0.0',
 }

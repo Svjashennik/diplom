@@ -2,7 +2,7 @@
 from django.http import Http404
 from rest_framework import permissions
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework import status
 from rest_framework.views import APIView
 from .services import *
 from . import models, serializers
@@ -44,6 +44,17 @@ class CartListAPIView(APIView):
     def post(self, request):
         game = models.Game.objects.filter(uuid=request.data['uuid']).first()
         return Response(game.add_to_cart(request.user))
+    
+    def put(self, request):
+        cart = models.Game.objects.get(uuid=request.data['uuid']).find_in_cart(request.user)
+        cart.count = request.data['count']
+        cart.save()
+        return Response(True)
+    
+    def delete(self, request):
+        cart = models.Game.objects.get(uuid=request.data['uuid']).find_in_cart(request.user)
+        cart.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
 
     def get_serializer_class(self):
         return serializers.GameListSerializer

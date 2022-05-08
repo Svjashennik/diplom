@@ -79,17 +79,15 @@ class RegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password', 'token']
 
-    def validate_username(self, value):
-        if User.objects.filter(username=value).exists():
+    def validate(self, attrs):
+        if User.objects.filter(username=attrs['username']).exists():
             raise serializers.ValidationError('This username already registered')
-
-        return value
-
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
+            
+        if User.objects.filter(email=attrs['email']).exists():
             raise serializers.ValidationError('This email already registered')
 
-        return value
+        return attrs
+
 
     def create(self, validated_data):
         username = validated_data.get('username')

@@ -108,7 +108,7 @@ class GenresAPIView(APIView):
     def get(self, request):
         genres = models.Genre.objects.all().order_by('name')
         serializer = serializers.GenresSerializer(genres, many=True)
-        return serializer.data
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         return serializers.GenresSerializer
@@ -119,7 +119,7 @@ class DeveloperAPIView(APIView):
     def get(self, request):
         devs = models.Developer.objects.all().order_by('name')
         serializer = serializers.DeveloperSerializer(devs, many=True)
-        return serializer.data
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         return serializers.DeveloperSerializer

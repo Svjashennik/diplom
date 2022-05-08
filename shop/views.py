@@ -24,9 +24,9 @@ class GameListAPIView(APIView):
         else:
             games = models.Game.objects.filter(active=True)
         if dev is not None:
-            games = games.filter(developer__name=dev)[start: end]
+            games = games.filter(developer__name=dev)
     
-        serializer = serializers.GameListSerializer(games, many=True, context={'request':request})
+        serializer = serializers.GameListSerializer(games[start: end], many=True, context={'request':request})
         return Response(serializer.data)
 
     def get_serializer_class(self):

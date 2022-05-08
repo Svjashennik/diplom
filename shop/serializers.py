@@ -73,10 +73,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True, write_only=True)
     username = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
+    token = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'token']
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():

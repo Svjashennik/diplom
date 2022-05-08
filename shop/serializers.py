@@ -110,3 +110,17 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return models.Review.objects.create(**validated_data, customer=self.context['request'].user, game=self.context['game'])
+
+
+class GenresSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Genre
+        fields = ['uuid', 'name', 'decs']
+
+
+class DeveloperSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Developer
+        fields = ['uuid', 'name', 'desc', 'country', 'city']

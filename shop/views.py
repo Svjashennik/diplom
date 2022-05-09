@@ -2,7 +2,7 @@
 from django.http import Http404
 from rest_framework import permissions
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework import status
 from rest_framework.views import APIView
 from .services import *
 from . import models, serializers
@@ -24,9 +24,9 @@ class GameListAPIView(APIView):
         else:
             games = models.Game.objects.filter(active=True)
         if dev is not None:
-            games = games.filter(developer__name=dev)[start: end]
+            games = games.filter(developer__name=dev)
     
-        serializer = serializers.GameListSerializer(games, many=True, context={'request':request})
+        serializer = serializers.GameListSerializer(games[start: end], many=True, context={'request':request})
         return Response(serializer.data)
 
     def get_serializer_class(self):
@@ -44,6 +44,17 @@ class CartListAPIView(APIView):
     def post(self, request):
         game = models.Game.objects.filter(uuid=request.data['uuid']).first()
         return Response(game.add_to_cart(request.user))
+    
+    def put(self, request):
+        cart = models.Game.objects.get(uuid=request.data['uuid']).find_in_cart(request.user)
+        cart.count = request.data['count']
+        cart.save()
+        return Response(True)
+    
+    def delete(self, request):
+        cart = models.Game.objects.get(uuid=request.data['uuid']).find_in_cart(request.user)
+        cart.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT) 
 
     def get_serializer_class(self):
         return serializers.GameListSerializer
@@ -101,3 +112,25 @@ class ReviewAPIView(APIView):
     
     def get_serializer_class(self):
         return serializers.ReviewSerializer
+
+
+class GenresAPIView(APIView):
+    
+    def get(self, request):
+        genres = models.Genre.objects.all().order_by('name')
+        serializer = serializers.GenresSerializer(genres, many=True)
+        return Response(serializer.data)
+
+    def get_serializer_class(self):
+        return serializers.GenresSerializer
+
+
+class DeveloperAPIView(APIView):
+    
+    def get(self, request):
+        devs = models.Developer.objects.all().order_by('name')
+        serializer = serializers.DeveloperSerializer(devs, many=True)
+        return Response(serializer.data)
+
+    def get_serializer_class(self):
+        return serializers.DeveloperSerializer

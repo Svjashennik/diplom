@@ -73,22 +73,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True, write_only=True)
     username = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
+    token = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'token']
 
-    def validate_username(self, value):
-        if User.objects.filter(username=value).exists():
+    def validate(self, attrs):
+        if User.objects.filter(username=attrs['username']).exists():
             raise serializers.ValidationError('This username already registered')
-
-        return value
-
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
+            
+        if User.objects.filter(email=attrs['email']).exists():
             raise serializers.ValidationError('This email already registered')
 
-        return value
+        return attrs
+
 
     def create(self, validated_data):
         username = validated_data.get('username')
@@ -109,3 +108,17 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return models.Review.objects.create(**validated_data, customer=self.context['request'].user, game=self.context['game'])
+
+
+class GenresSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Genre
+        fields = ['uuid', 'name', 'decs']
+
+
+class DeveloperSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Developer
+        fields = ['uuid', 'name', 'desc', 'country', 'city']

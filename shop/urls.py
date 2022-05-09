@@ -7,6 +7,8 @@ urlpatterns = [
     path('cart/', views.CartListAPIView.as_view()),
     path('orderlist/', views.OrderListAPIView.as_view()),
     path('registration/', views.RegistrationAPIView.as_view()),
+    path('genres/', views.GenresAPIView.as_view()),
+    path('developers/', views.DeveloperAPIView.as_view()),
     path('reviews/<uuid:uuid>/', views.ReviewAPIView.as_view()),
     path('login/', obtain_auth_token )
 ]

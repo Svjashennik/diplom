@@ -26,7 +26,7 @@ class BugReport(models.Model):
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
     owner= models.ForeignKey(User, on_delete=models.CASCADE, related_name='bugreports')
-    index = models.IntegerField()
+    index = models.IntegerField(default=0)
     name = models.TextField()
     steps = models.TextField(default = '', blank=True)
     fact_result =  models.TextField(default = '', blank=True)

@@ -65,3 +65,11 @@ class UserBugListAPIView(APIView):
     
     def get_serializer_class(self):
         return serializers.BugReportListSerializer
+
+
+
+class AccountInfoAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        return Response({'username':request.user.username})

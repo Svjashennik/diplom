@@ -6,9 +6,9 @@ from . import models
 class BugReportSerializer(serializers.ModelSerializer):
     index = serializers.IntegerField(required=False)
     name = serializers.CharField(required=False)
-    severity = serializers.CharField(required=False)
-    priority = serializers.CharField(required=False)
-    status = serializers.CharField(required=False)
+    severity = serializers.ChoiceField(models.BugReport.Severity,required=False)
+    priority = serializers.ChoiceField(models.BugReport.Priority,required=False)
+    status = serializers.ChoiceField(models.BugReport.Status,required=False)
 
     class Meta:
         model = models.BugReport 
